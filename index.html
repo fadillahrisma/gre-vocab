@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>GRE Mastery Hub | Curated by Risma Fadillah</title>
+    <meta name="description" content="Minimalist GRE study tool. Master high-frequency vocabulary and Sentence Equivalence logic with curated questions by Risma Fadillah.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Modern Earthy Palette based on reference */
+        :root {
+            --bg-color: #F8F5F1;       /* Warm Beige */
+            --card-bg: #FFFFFF;
+            --text-main: #3C2A21;     /* Dark Terracotta/Brown */
+            --text-sub: #7F6F61;      /* Muted Brown */
+            --primary-accent: #626F47; /* Muted Olive Green */
+            --secondary-accent: #A4907C; /* Warm Taupe */
+            --success: #889E73;        /* Soft Sage Green */
+            --danger: #BC8F8F;         /* Rosy Brown/Dusty Red */
+            --border-color: #EAE3D9;
+            --shadow: 0 4px 20px rgba(60, 42, 33, 0.04);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        body { 
+            font-family: var(--font-family); 
+            background-color: var(--bg-color); 
+            margin: 0; 
+            color: var(--text-main); 
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        header { 
+            background-color: var(--card-bg);
+            padding: 2rem 1rem; 
+            text-align: center; 
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 { 
+            margin: 0; 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+        
+        .author { 
+            font-size: 0.9rem; 
+            color: var(--text-sub); 
+            font-weight: 400; 
+            margin-top: 4px; 
+            display: block; 
+        }
+        
+        nav { margin-top: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        nav button { 
+            background-color: transparent; 
+            color: var(--text-main); 
+            border: 1px solid var(--secondary-accent); 
+            padding: 8px 20px; 
+            cursor: pointer; 
+            border-radius: 30px; 
+            font-weight: 500; 
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        nav button:hover, nav button.active { 
+            background-color: var(--primary-accent); 
+            color: #FFFFFF; 
+            border-color: var(--primary-accent); 
+        }
+
+        #main-content { padding: 40px 20px; max-width: 900px; margin: auto; }
+        
+        /* estetik Progress Circle */
+        .progress-circle-container {
+            position: fixed; top: 20px; right: 20px;
+            width: 50px; height: 50px;
+            z-index: 100;
+        }
+        .progress-circle {
+            transform: rotate(-90deg);
+            width: 100%; height: 100%;
+        }
+        .progress-circle-bg { fill: none; stroke: var(--border-color); stroke-width: 4; }
+        .progress-circle-bar {
+            fill: none; stroke: var(--success); stroke-width: 4;
+            stroke-dasharray: 126; /* Circumference (2 * pi * 20) */
+            stroke-dashoffset: 126;
+            transition: stroke-dashoffset 0.5s ease;
+            stroke-linecap: round;
+        }
+
+        /* Tampilan Teks Modern */
+        h2.section-title { 
+            font-size: 1.4rem; font-weight: 600; color: var(--text-main); margin-bottom: 25px; 
+            letter-spacing: -0.3px;
+        }
+
+        #searchBar { 
+            width: 100%; padding: 14px 20px; margin-bottom: 30px; 
+            border: 1px solid var(--border-color); border-radius: 12px; 
+            font-size: 0.95rem; background-color: var(--card-bg); 
+            color: var(--text-main); outline: none; transition: 0.3s;
+        }
+        #searchBar:focus { border-color: var(--primary-accent); box-shadow: 0 0 0 3px rgba(98, 111, 71, 0.1); }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        
+        .word-card { 
+            background: var(--card-bg); padding: 25px; border-radius: 16px; 
+            box-shadow: var(--shadow); transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .word-card:hover { transform: translateY(-3px); border-color: var(--border-color); }
+        .word-card h3 { margin: 0 0 10px 0; color: var(--primary-accent); font-size: 1.25rem; font-weight: 600; }
+        .word-meaning { font-size: 0.95rem; line-height: 1.5; color: var(--text-main); margin-bottom: 12px; }
+        .word-sentence { font-style: italic; color: var(--text-sub); font-size: 0.85rem; line-height: 1.4; border-top: 1px solid var(--border-color); padding-top: 10px; }
+
+        /* estetik Quiz UI */
+        .quiz-container { 
+            background: var(--card-bg); padding: 40px; border-radius: 20px; 
+            box-shadow: var(--shadow); max-width: 600px; margin: auto; text-align: center;
+        }
+
+        .streak-info { font-size: 0.85rem; color: var(--secondary-accent); font-weight: 600; margin-bottom: 10px; display: block; }
+        .quiz-type { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-sub); margin-bottom: 5px; font-weight: 700; }
+        #quiz-word { font-size: 2.2rem; font-weight: 700; color: var(--text-main); margin: 0 0 10px 0; letter-spacing: -1px; }
+        #quiz-context { font-size: 0.95rem; line-height: 1.5; color: var(--text-sub); margin-bottom: 30px; font-style: italic; background-color: #FBF9F6; padding: 15px; border-radius: 8px;}
+        #quiz-context strong { color: var(--primary-accent); text-decoration: underline; text-underline-offset: 3px; }
+
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        @media (min-width: 600px) { .options-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .option-btn { 
+            padding: 18px; border: 1px solid var(--border-color); background: var(--card-bg); 
+            color: var(--text-main); cursor: pointer; border-radius: 12px; 
+            transition: all 0.2s ease; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; justify-content: space-between;
+        }
+        .option-btn:hover { border-color: var(--secondary-accent); background-color: #FBF9F6; }
+        
+        /* estetik Multi-select state */
+        .option-btn.selected { border-color: var(--primary-accent); background-color: rgba(98, 111, 71, 0.05); color: var(--primary-accent); }
+        .option-btn.selected::after { content: '✓'; font-weight: bold; margin-left: 10px; color: var(--primary-accent); }
+
+        .option-btn.correct { background-color: var(--success) !important; color: white !important; border-color: var(--success); }
+        .option-btn.wrong { background-color: var(--danger) !important; color: white !important; border-color: var(--danger); }
+
+        #feedback-box { margin-top: 25px; min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #feedback-text { font-weight: 600; font-size: 1rem; margin-bottom: 5px; }
+        #explanation-text { font-size: 0.85rem; color: var(--text-sub); }
+
+        #next-btn { 
+            margin-top: 15px; padding: 12px 30px; background: var(--primary-accent); 
+            color: white; border: none; border-radius: 50px; cursor: pointer; 
+            font-weight: 600; font-size: 0.9rem; transition: 0.3s;
+        }
+        #next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>GRE Mastery Hub</h1>
+        <span class="author">Curated Essential Study Material by <b>Risma Fadillah</b></span>
+        <nav id="mode-nav">
+            <button onclick="changeMode('vocab-list')" id="btn-vocab-list" class="active">Vocabulary List</button>
+            <button onclick="changeMode('vocab-quiz')" id="btn-vocab-quiz">Vocab Quiz</button>
+            <button onclick="changeMode('se-quiz')" id="btn-se-quiz">Sentence Equivalence</button>
+        </nav>
+    </header>
+
+    <div class="progress-circle-container">
+        <svg class="progress-circle" viewBox="0 0 44 44">
+            <circle class="progress-circle-bg" cx="22" cy="22" r="20"/>
+            <circle class="progress-circle-bar" id="progress-bar-circle" cx="22" cy="22" r="20"/>
+        </svg>
+    </div>
+
+    <main id="main-content">
+        
+        <section id="list-section">
+            <h2 class="section-title">Essential Vocabulary Bank (100)</h2>
+            <input type="text" id="searchBar" placeholder="Search a word or meaning..." onkeyup="filterWords()">
+            <div id="wordList" class="grid-container"></div>
+        </section>
+
+        <section id="quiz-section" style="display:none;">
+            <div class="quiz-container">
+                <span class="streak-info">Current Streak: <span id="streak-count">0</span> 🔥</span>
+                <div id="quiz-content-area">
+                    </div>
+                <div id="feedback-box">
+                    <div id="feedback-text"></div>
+                    <div id="explanation-text"></div>
+                </div>
+                <button id="next-btn" onclick="loadNewQuestion()" style="display:none;">Continue →</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- DATA BANK (Curated Soal) ---
+        
+        // 1. Vocab Data (Definisi & Kalimat)
+        const vocabData = [
+            {word: "Assuage", meaning: "To make an unpleasant feeling less intense; relieve.", sentence: "The government tried to assuage the public's fears about the economy."},
+            {word: "Lucid", meaning: "Expressed clearly; easy to understand; rational.", sentence: "The lecture was lucid and very easy to follow."},
+            {word: "Prodigal", meaning: "Spending money or resources freely and recklessly.", sentence: "The prodigal son spent all his inheritance on luxury items."},
+            {word: "Equivocal", meaning: "Open to more than one interpretation; ambiguous; uncertain.", sentence: "The candidate gave an equivocal answer to the question about taxes."},
+            {word: "Erudite", meaning: "Having or showing great knowledge or learning.", sentence: "The professor was known for his erudite lectures on ancient history."},
+            {word: "Opaque", meaning: "Not able to be seen through; not transparent; hard to understand.", sentence: "The report's opaque language concealed the true financial situation."},
+            {word: "Placate", meaning: "To make someone less angry or hostile; appease.", sentence: "The manager tried to placate the angry customer with a refund."},
+            {word: "Enigma", meaning: "A person or thing that is mysterious, puzzling, or difficult to understand.", sentence: "The disappearances remain an enigma to this day."},
+            {word: "Fervid", meaning: "Intensely enthusiastic or passionate; burning.", sentence: "The crowd gave the speaker a fervid reception."},
+            {word: "Vacillate", meaning: "To alternate or waver between different opinions or actions; be indecisive.", sentence: "She vacillated between the two options for hours."}
+            // Tambahkan sampai 100 kata dengan format ini
+        ];
+
+        // 2. Sentence Equivalence Data (2 Correct Answers)
+        const seData = [
+            {
+                context: "The professor's ________ lectures were so boring that most students fell asleep.",
+                options: ["Soporific", "Lucid", "Somniferous", "Erudite", "Pithy", "Eloquent"],
+                correctIndices: [0, 2], // Soporific, Somniferous
+                explanation: "Both 'soporific' and 'somniferous' mean tending to induce sleep, which fits the context of boring lectures."
+            },
+            {
+                context: "Despite the market crash, the CEO remained ________, confidently detailing the company's long-term growth plan.",
+                options: ["Agitated", "Imperturbable", "Lethargic", "Unflappable", "Irascible", "Capricious"],
+                correctIndices: [1, 3], // Imperturbable, Unflappable
+                explanation: "Both 'imperturbable' and 'unflappable' mean calm and unable to be upset, fitting the CEO's confident behavior."
+            },
+            {
+                context: "The politician was known for her ________ style; she rarely used ten words when two would suffice.",
+                options: ["Loquacious", "Laconic", "Garrulous", "Verbose", "Terse", "Florid"],
+                correctIndices: [1, 4], // Laconic, Terse
+                explanation: "Both 'laconic' and 'terse' mean using very few words, fitting the description of her brief style."
+            },
+            {
+                context: "The artifact was so ancient and unique that its value was considered ________.",
+                options: ["Ephemeral", "Inestimable", "Negligible", "Priceless", "Banal", "Discrete"],
+                correctIndices: [1, 3], // Inestimable, Priceless
+                explanation: "Both 'inestimable' and 'priceless' mean too great to be calculated, fitting a unique ancient artifact."
+            },
+            {
+                context: "The data test results were ________, baffling the scientists who had expected a clear pattern.",
+                options: ["Anomalous", "Lucid", "Opaque", "Aberrant", "Pedantic", "Malleable"],
+                correctIndices: [0, 3], // Anomalous, Aberrant
+                explanation: "Both 'anomalous' and 'aberrant' mean deviating from what is normal or expected, which explains the baffling results."
+            }
+        ];
+
+        // --- GAME LOGIC ---
+        let currentMode = 'vocab-list';
+        let streak = 0;
+        let masteredCount = 0;
+        let currentQ = {};
+        let selectedIndices = []; // For SE mode
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(freq, dur) {
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = freq; gain.gain.value = 0.03; osc.start(); setTimeout(() => osc.stop(), dur);
+        }
+
+        function updateProgress() {
+            const total = (currentMode === 'se-quiz') ? seData.length : vocabData.length;
+            const mastered = masteredCount; // Simplified: 1 mastered per correct answer
+            const percent = (mastered / total) * 100;
+            const offset = 126 - (126 * (percent / 100));
+            document.getElementById('progress-bar-circle').style.strokeDashoffset = offset;
+        }
+
+        function changeMode(mode) {
+            currentMode = mode;
+            // Update NAV UI
+            document.querySelectorAll('#mode-nav button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${mode}`).classList.add('active');
+
+            // Update Section UI
+            document.getElementById('list-section').style.display = mode === 'vocab-list' ? 'block' : 'none';
+            document.getElementById('quiz-section').style.display = mode.includes('quiz') ? 'block' : 'none';
+            
+            // Reset Progress for mode
+            masteredCount = 0; 
+            updateProgress();
+
+            if(mode.includes('quiz')) loadNewQuestion();
+        }
+
+        function loadNewQuestion() {
+            // Clear UI
+            document.getElementById('feedback-text').innerText = '';
+            document.getElementById('explanation-text').innerText = '';
+            document.getElementById('next-btn').style.display = 'none';
+            selectedIndices = []; // Reset selections
+
+            const contentArea = document.getElementById('quiz-content-area');
+            contentArea.innerHTML = ''; // Clear previous structure
+
+            if (currentMode === 'vocab-quiz') {
+                loadVocabQuestion(contentArea);
+            } else if (currentMode === 'se-quiz') {
+                loadSEQuestion(contentArea);
+            }
+        }
+
+        // 1. Vocab Quiz Mode (1 correct answer)
+        function loadVocabQuestion(container) {
+            currentQ = vocabData[Math.floor(Math.random() * vocabData.length)];
+            
+            // Layout Estetik
+            container.innerHTML = `
+                <div class="quiz-type">Match Definition</div>
+                <h2 id="quiz-word">${currentQ.word}</h2>
+                <div id="answer-options" class="options-grid"></div>
+            `;
+
+            let options = [currentQ.meaning];
+            while(options.length < 4) {
+                let rand = vocabData[Math.floor(Math.random() * vocabData.length)].meaning;
+                if(!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.getElementById('answer-options');
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    // Disable all
+                    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+                    if(opt === currentQ.meaning) {
+                        streak++; btn.classList.add('correct'); playTone(900, 150);
+                        document.getElementById('feedback-text').innerHTML = `<span style="color:var(--success)">Correct! +1 Strk⚡</span>`;
+                        masteredCount = Math.min(masteredCount + 1, vocabData.length);
+                    } else {
+                        streak = 0; btn.classList.add('wrong'); playTone(200, 300);
+                        document.getElementById('feedback-text').innerHTML = `<span style="color:var(--danger)">Wrong. Strk lost.💨</span>`;
+                        document.getElementById('explanation-text').innerText = `Def: ${currentQ.meaning}`;
+                    }
+                    finalizeTurn();
+                };
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // 2. Sentence Equivalence Mode (2 correct answers)
+        function loadSEQuestion(container) {
+            currentQ = seData[Math.floor(Math.random() * seData.length)];
+
+            // Layout estetik SE
+            container.innerHTML = `
+                <div class="quiz-type">Sentence Equivalence</div>
+                <p id="quiz-context">${currentQ.context.replace('________', '<strong>[ blanks ]</strong>')}</p>
+                <div style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px; font-weight:600">SELECT EXACTLY 2 WORDS:</div>
+                <div id="answer-options" class="options-grid"></div>
+                <button id="se-check-btn" onclick="checkSEAnswer()" style="margin-top:20px; padding: 10px 25px; background:var(--secondary-accent); color:white; border:none; border-radius:30px; cursor:pointer;" disabled>Check Answer</button>
+            `;
+
+            const optionsContainer = document.getElementById('answer-options');
+            currentQ.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => toggleSEOption(btn, index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function toggleSEOption(btn, index) {
+            const checkBtn = document.getElementById('se-check-btn');
+            
+            if (selectedIndices.includes(index)) {
+                // Deselect
+                selectedIndices = selectedIndices.filter(i => i !== index);
+                btn.classList.remove('selected');
+            } else if (selectedIndices.length < 2) {
+                // Select
+                selectedIndices.push(index);
+                btn.classList.add('selected');
+            }
+            
+            // Enable Check button only if exactly 2 are selected
+            checkBtn.disabled = selectedIndices.length !== 2;
+        }
+
+        function checkSEAnswer() {
+            // Disable interactions
+            document.getElementById('se-check-btn').style.display = 'none';
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            // Sort both arrays to compare
+            const sortedSelected = [...selectedIndices].sort();
+            const sortedCorrect = [...currentQ.correctIndices].sort();
+
+            const isCorrect = JSON.stringify(sortedSelected) === JSON.stringify(sortedCorrect);
+
+            if (isCorrect) {
+                streak++; playTone(900, 150);
+                document.getElementById('feedback-text').innerHTML = `<span style="color:var(--success)">Perfect! Both Correct +1 Strk⚡</span>`;
+                // Highlight correct buttons in sage green
+                sortedSelected.forEach(i => buttons[i].classList.add('correct'));
+                masteredCount = Math.min(masteredCount + 1, seData.length);
+            } else {
+                streak = 0; playTone(200, 300);
+                document.getElementById('feedback-text').innerHTML = `<span style="color:var(--danger)">Not quite. Strk lost.💨</span>`;
+                // Highlight correct ones in green, wrong in dusty red
+                currentQ.correctIndices.forEach(i => buttons[i].classList.add('correct'));
+                selectedIndices.forEach(i => {
+                    if (!currentQ.correctIndices.includes(i)) buttons[i].classList.add('wrong');
+                });
+                document.getElementById('explanation-text').innerText = currentQ.explanation;
+            }
+            finalizeTurn();
+        }
+
+        function finalizeTurn() {
+            document.getElementById('streak-count').innerText = streak;
+            document.getElementById('next-btn').style.display = 'inline-block';
+            updateProgress();
+        }
+
+        // --- INITIALIZE VOCAB LIST ---
+        function displayWords() {
+            const listContainer = document.getElementById('wordList');
+            listContainer.innerHTML = '';
+            // Gunakan vocabData lengkap (pikirkan cara load 100 kata)
+            vocabData.forEach(item => {
+                const card = document.createElement('div'); card.className = 'word-card';
+                card.innerHTML = `<h3>${item.word}</h3><p class="word-meaning">${item.meaning}</p><p class="word-sentence">"${item.sentence}"</p>`;
+                listContainer.appendChild(card);
+            });
+        }
+
+        function filterWords() {
+            const term = document.getElementById('searchBar').value.toLowerCase();
+            document.querySelectorAll('.word-card').forEach(card => card.style.display = card.innerText.toLowerCase().includes(term) ? 'block' : 'none');
+        }
+
+        displayWords();
+        updateProgress();
+
+    </script>
+</body>
+</html>
